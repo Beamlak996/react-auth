@@ -18,16 +18,24 @@ import {
   loginSchema,
   loginSchemaDefaultValues,
 } from "../types/login-schema";
+import { useLoginMutation } from "../services/auth-queries";
 
 export const LoginForm = () => {
+    const loginMutation = useLoginMutation()
+
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: loginSchemaDefaultValues,
   });
 
-  const onSubmit = (values: LoginSchema) => {
-    // Handle form submission
-    console.log("Login Data:", values);
+  const onSubmit = async (values: LoginSchema) => {
+      try {
+          const res =  loginMutation.mutate(values);
+          console.log(res)
+          console.log('click')
+    } catch (err: any) {
+      console.log(err);
+    }
   };
 
   return (
