@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { LoginPage } from "./modules/auth/pages/login-page";
 
 export default function Home() {
+  
+
   return (
-    <div>
-      <Button>Click me</Button>
-    </div>
+    <LoginPage />
   );
 }
