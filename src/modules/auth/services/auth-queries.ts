@@ -13,7 +13,7 @@ export const useLoginMutation = () => {
       retry: 0,
       mutationFn: (data: LoginRequest) => loginUser(data),
       onSuccess: (data) => {
-        console.log(data);
+        console.log(data)
         setUser(data.user);
         setAccessToken(data.accessToken);
       },

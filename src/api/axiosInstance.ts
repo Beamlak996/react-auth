@@ -29,9 +29,7 @@ const createAxiosInstance = (): AxiosInstance => {
     withCredentials: true,
   });
 
-  // Max retries for each request
-  const MAX_RETRIES = 1;
-
+  // Set up request interceptor
   instance.interceptors.request.use((config) => {
     const accessToken = useStore.getState().accessToken;
     if (accessToken) {
@@ -40,6 +38,7 @@ const createAxiosInstance = (): AxiosInstance => {
     return config;
   });
 
+  // Set up response interceptor
   instance.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -70,11 +69,6 @@ const createAxiosInstance = (): AxiosInstance => {
 
         // Set the request retry flag and initiate token refresh
         originalRequest._retry = true;
-        originalRequest._retries = originalRequest._retries || 0;
-
-        if (originalRequest._retries >= MAX_RETRIES) {
-          return Promise.reject(error); // Max retries reached, fail the request
-        }
 
         isRefreshing = true;
 

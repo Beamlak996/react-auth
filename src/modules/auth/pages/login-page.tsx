@@ -3,7 +3,7 @@ import { LoginForm } from "../components/login-form";
 
 export function LoginPage() {
   return (
-    <div className="relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+    <div className="relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0 bg-slate-50">
       <LoginContent />
       <LoginForm />
     </div>

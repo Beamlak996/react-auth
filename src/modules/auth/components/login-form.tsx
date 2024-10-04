@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
 import {
   Form,
   FormControl,
@@ -11,7 +10,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
 import { PasswordInput } from "@/components/general/password-input";
 import {
   LoginSchema,
@@ -19,22 +17,35 @@ import {
   loginSchemaDefaultValues,
 } from "../types/login-schema";
 import { useLoginMutation } from "../services/auth-queries";
+import { AxiosError } from "axios";
+import { FormError } from "@/components/general/form-error";
+import { useState } from "react";
+import { FormSuccess } from "@/components/general/form-success";
 
 export const LoginForm = () => {
-    const loginMutation = useLoginMutation()
+  const [error, setError] = useState<string>("")
+  const [success, setSuccess] = useState<string>("")
 
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: loginSchemaDefaultValues,
   });
 
+  const { mutateAsync, isPending, isSuccess } = useLoginMutation();
+
   const onSubmit = async (values: LoginSchema) => {
-      try {
-          const res =  loginMutation.mutate(values);
-          console.log(res)
-          console.log('click')
+    setError("")
+    setSuccess("")
+
+    try {
+      await mutateAsync(values);
+      setSuccess("Login successful")
     } catch (err: any) {
-      console.log(err);
+      if (err instanceof AxiosError) {
+        const resErrorMessage =
+          err.response?.data?.message || "An error occurred. Please try again.";
+        setError(resErrorMessage)
+      }
     }
   };
 
@@ -49,6 +60,8 @@ export const LoginForm = () => {
             Enter your username and password to log in
           </p>
         </div>
+        <FormSuccess message={success} />
+        <FormError message={error} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -58,7 +71,11 @@ export const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your email" {...field} type="email" />
+                    <Input
+                      placeholder="Enter your email"
+                      {...field}
+                      type="email"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -80,8 +97,8 @@ export const LoginForm = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
-              Continue
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? "Loading..." : "Continue"}
             </Button>
           </form>
         </Form>

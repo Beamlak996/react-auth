@@ -9,13 +9,11 @@ export const createUserSlice: StateCreator<
 > = (set) => ({
   user: null, 
   accessToken: null, 
-  loading: false, 
-  error: null, 
+
 
   setUser: (user) =>
     set((state) => {
       state.user = user;
-      state.error = null;
     }),
 
   setAccessToken: (token) =>
@@ -28,27 +26,5 @@ export const createUserSlice: StateCreator<
       state.user = null;
       state.accessToken = null;
       if (callback) callback();
-    }),
-
-  setLoginError: (error) =>
-    set((state) => {
-      state.error = error;
-      state.loading = false;
-    }),
-
-  resetError: () =>
-    set((state) => {
-      state.error = null;
-    }),
-
-  loginInStart: () =>
-    set((state) => {
-      state.loading = true;
-      state.error = null;
-    }),
-
-  loginInSuccess: () =>
-    set((state) => {
-      state.loading = false;
     }),
 });
