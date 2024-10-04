@@ -1,5 +1,9 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+
 import {
   Form,
   FormControl,
@@ -17,29 +21,26 @@ import {
   loginSchemaDefaultValues,
 } from "../types/login-schema";
 import { useLoginMutation } from "../services/auth-queries";
-import { AxiosError } from "axios";
 import { FormError } from "@/components/general/form-error";
-import { useState } from "react";
-import { FormSuccess } from "@/components/general/form-success";
 
 export const LoginForm = () => {
   const [error, setError] = useState<string>("")
-  const [success, setSuccess] = useState<string>("")
+
+  const navigate = useNavigate();
 
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: loginSchemaDefaultValues,
   });
 
-  const { mutateAsync, isPending, isSuccess } = useLoginMutation();
+  const { mutateAsync, isPending } = useLoginMutation();
 
   const onSubmit = async (values: LoginSchema) => {
     setError("")
-    setSuccess("")
 
     try {
       await mutateAsync(values);
-      setSuccess("Login successful")
+      navigate('/test')
     } catch (err: any) {
       if (err instanceof AxiosError) {
         const resErrorMessage =
@@ -60,7 +61,6 @@ export const LoginForm = () => {
             Enter your username and password to log in
           </p>
         </div>
-        <FormSuccess message={success} />
         <FormError message={error} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -97,6 +97,7 @@ export const LoginForm = () => {
                 </FormItem>
               )}
             />
+            
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? "Loading..." : "Continue"}
             </Button>

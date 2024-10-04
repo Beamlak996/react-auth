@@ -1,9 +1,14 @@
-import { LoginPage } from "./modules/auth/pages/login-page";
+import { RouterProvider } from "react-router-dom";
 
-export default function Home() {
-  
+import { AuthProvider } from "./components/providers/auth-provider";
+import { router } from "./routes/routes";
 
+function App() {
   return (
-    <LoginPage />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   );
 }
+
+export default App;
