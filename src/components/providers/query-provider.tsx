@@ -24,7 +24,7 @@ export const QueryProvider = ({
         staleTime: 5 * 60 * 1000, // 5 minutes
       },
       mutations: {
-        retry: 3,
+        retry: 0,
       },
     };
 

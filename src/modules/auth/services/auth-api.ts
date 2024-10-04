@@ -1,5 +1,6 @@
 import { useAxiosInstance } from "@/api/axiosInstance";
-import { LoginRequest } from "../types/user";
+import { LoginRequest, User } from "../types/user";
+import { TestCreateUserSchema } from "@/types/test-create-user-schema";
 
 export const useAuthService = () => {
   const axiosInstance = useAxiosInstance();
@@ -14,5 +15,20 @@ export const useAuthService = () => {
     return response.data.accessToken;
   };
 
-  return { loginUser, refreshUserToken };
+  const logoutUser = async () => {
+    const response = await axiosInstance.post("/auth/logout");
+    return response.data;
+  };
+
+  const getAllUsers = async () => {
+    const response = await axiosInstance.get<User[]>("/users");
+    return response.data
+  }
+
+  const createUser = async (user: TestCreateUserSchema) => {
+    const response = await axiosInstance.post<User>("/users", user);
+    return response.data
+  }
+
+  return { loginUser, refreshUserToken, getAllUsers, createUser, logoutUser };
 };

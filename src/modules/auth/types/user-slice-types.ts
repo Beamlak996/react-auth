@@ -9,7 +9,7 @@ export type UserState = {
 export type UserActions = {
   setUser: (user: User | null) => void; 
   setAccessToken: (token: string | null) => void; 
-  logout: (callback?: () => void) => void;  
+  logout: () => void;  
 };
 
 export type UserSlice = UserState & UserActions;

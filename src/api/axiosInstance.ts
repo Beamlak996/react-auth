@@ -29,7 +29,6 @@ const createAxiosInstance = (): AxiosInstance => {
     withCredentials: true,
   });
 
-  // Set up request interceptor
   instance.interceptors.request.use((config) => {
     const accessToken = useStore.getState().accessToken;
     if (accessToken) {
@@ -38,24 +37,20 @@ const createAxiosInstance = (): AxiosInstance => {
     return config;
   });
 
-  // Set up response interceptor
   instance.interceptors.response.use(
     (response) => response,
     async (error) => {
       const originalRequest = error.config;
 
-      // Check if it's a login attempt and credentials are wrong
       if (
         originalRequest.url === "/auth/login" &&
         error.response?.status === 401 &&
         !originalRequest._retry
       ) {
-        return Promise.reject(error); // Login failed, do not retry
+        return Promise.reject(error);
       }
 
-      // Retry the request for non-login requests if it failed due to token expiration (401 Unauthorized)
       if (error.response?.status === 401 && !originalRequest._retry) {
-        // Check if it's already retrying
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             failedQueue.push({ resolve, reject });
@@ -67,7 +62,6 @@ const createAxiosInstance = (): AxiosInstance => {
             .catch((err) => Promise.reject(err));
         }
 
-        // Set the request retry flag and initiate token refresh
         originalRequest._retry = true;
 
         isRefreshing = true;
@@ -76,13 +70,12 @@ const createAxiosInstance = (): AxiosInstance => {
           const newAccessToken = await refreshToken();
           useStore.getState().setAccessToken(newAccessToken);
 
-          // Update the original request with the new token and retry
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           processQueue(null, newAccessToken);
           return instance(originalRequest);
         } catch (refreshError) {
           processQueue(refreshError as AxiosError, null);
-          useStore.getState().logout(); // Logout the user if refresh fails
+          useStore.getState().logout();
           return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;

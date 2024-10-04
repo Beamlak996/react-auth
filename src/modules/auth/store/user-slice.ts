@@ -3,13 +3,12 @@ import { UserSlice } from "../types/user-slice-types";
 
 export const createUserSlice: StateCreator<
   UserSlice,
-  [["zustand/immer", never]], 
-  [], 
+  [["zustand/immer", never]],
+  [],
   UserSlice
 > = (set) => ({
-  user: null, 
-  accessToken: null, 
-
+  user: null,
+  accessToken: null,
 
   setUser: (user) =>
     set((state) => {
@@ -21,10 +20,9 @@ export const createUserSlice: StateCreator<
       state.accessToken = token;
     }),
 
-  logout: (callback) =>
+  logout: () =>
     set((state) => {
       state.user = null;
       state.accessToken = null;
-      if (callback) callback();
     }),
 });
