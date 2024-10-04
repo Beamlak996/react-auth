@@ -10,9 +10,10 @@ export const useLoginMutation = () => {
      const { loginUser } = useAuthService();
 
     return useMutation({
+      retry: 0,
       mutationFn: (data: LoginRequest) => loginUser(data),
       onSuccess: (data) => {
-        console.log(data)
+        console.log(data);
         setUser(data.user);
         setAccessToken(data.accessToken);
       },

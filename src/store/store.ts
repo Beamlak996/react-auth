@@ -15,6 +15,10 @@ export const useStore = create<Store>()(
       ),
       {
         name: "react-auth",
+        partialize: (state) => {
+          const { accessToken, ...rest } = state;
+          return rest;
+        },
       }
     )
   )
